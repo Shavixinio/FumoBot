@@ -37,3 +37,5 @@ npm start
 # Changes
 - Added dotenv file example
 - Added installation guide above
+- Added command handling
+- Added a ping command
