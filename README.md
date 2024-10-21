@@ -14,7 +14,7 @@ ver. 0.0.2 Beta
 2. Invite your bot to any server [here](https://discordapi.com/permissions.html#0) (You must have the Manage Server permission to invite bots)
 3. Open your Terminal
 ```console
-cd desktop
+cd (Your folder for the repository)
 ```
 ```console
 git pull https://github.com/Shavixinio/DiscordBotProject.git
@@ -25,6 +25,9 @@ npm init # Follow the process
 
 ```console
 npm i discord.js
+```
+```console
+npm i dotenv
 ```
 4. Get your bot's token and paste it into the `.envexample` (Make sure to actually rename the file to `.env`)
 > [!CAUTION]
