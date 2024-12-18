@@ -1,68 +1,58 @@
-const { Client, Events, GatewayIntentBits, REST, Routes } = require('discord.js');
-require('dotenv').config(); // Load environment variables from .env file
-const token = process.env.TOKEN;
-const clientId = process.env.CLIENT_ID;
-const guildId = process.env.GUILD_ID;
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
+const { Client, Collection, Events, GatewayIntentBits, PresenceUpdateStatus, ActivityType } = require('discord.js');
+require('dotenv').config()
+const token = process.env.TOKEN
 
-// Create a new client instance with the specified intents
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({
+	intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.MessageContent
+	], allowedMentions: { parse: ['users'] } });
 
-// Load commands from the commands directory
-const commands = [];
-const commandsPath = path.join(__dirname, 'commands');
-const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+client.commands = new Collection();
+const foldersPath = path.join(__dirname, 'commands');
+const commandFolders = fs.readdirSync(foldersPath);
 
-// Set up commands by reading each command file and adding it to the client.commands collection
-for (const file of commandFiles) {
-    const command = require(`./commands/${file}`);
-    commands.push(command.data.toJSON());
-    client.commands.set(command.data.name, command);
+for (const folder of commandFolders) {
+	const commandsPath = path.join(foldersPath, folder);
+	const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+	for (const file of commandFiles) {
+		const filePath = path.join(commandsPath, file);
+		const command = require(filePath);
+		if ('data' in command && 'execute' in command) {
+			client.commands.set(command.data.name, command);
+		} else {
+			console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+		}
+	}
 }
 
-// Create a new REST instance for registering commands
-const rest = new REST({ version: '9' }).setToken(token);
-
-// Register commands with the Discord API
-(async () => {
-    try {
-        console.log('Started refreshing application (/) commands.');
-        await rest.put(
-            Routes.applicationGuildCommands(clientId, guildId),
-            { body: commands },
-        );
-        console.log('Successfully reloaded application (/) commands.');
-    } catch (error) {
-        // Log any errors to the console
-        console.error(error);
-    }
-})();
-
-// Turn on the bot when the client is ready. The bot will appear online.
 client.once(Events.ClientReady, readyClient => {
-    console.log(`Logged in as ${readyClient.user.tag}`);
+	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
+	client.user.setStatus(PresenceUpdateStatus.DoNotDisturb)
+	client.user.setActivity(`siema Konkowski`, { type: ActivityType.Custom })
 });
 
-// Handle interaction events
 client.on(Events.InteractionCreate, async interaction => {
-    if (!interaction.isCommand()) return; // Ignore non-command interactions
+	if (!interaction.isChatInputCommand()) return;
+	const command = interaction.client.commands.get(interaction.commandName);
 
-    // Get the command from the client.commands collection
-    const command = client.commands.get(interaction.commandName);
+	if (!command) {
+		console.error(`No command matching ${interaction.commandName} was found.`);
+		return;
+	}
 
-    // If the command doesn't exist, exit early
-    if (!command) return;
-
-    try {
-        // Execute the command
-        await command.execute(interaction);
-    } catch (error) {
-        console.error(error);
-        // Reply with an error message if the command execution fails
-        await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
-    }
+	try {
+		await command.execute(interaction);
+	} catch (error) {
+		console.error(error);
+		if (interaction.replied || interaction.deferred) {
+			await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
+		} else {
+			await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+		}
+	}
 });
 
-// Log in with your bot's token
 client.login(token);
