@@ -1,7 +1,7 @@
 # DiscordBotProject
 Discord bot that helps with moderation through slash commands that are built-in the bot.
 
-ver. 0.0.2 Beta
+ver. 0.3 Sigma
 
 # Installation
 ### Requirements
@@ -38,7 +38,9 @@ npm i dotenv
 npm start
 ```
 # Changes
-- Added dotenv file example
-- Added installation guide above
-- Added command handling
-- Added a ping command
+## New commands:
+- Ban
+- Kick
+- Unban
+
+## Updated the main and deploy file
