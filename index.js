@@ -31,7 +31,7 @@ for (const folder of commandFolders) {
 client.once(Events.ClientReady, readyClient => {
 	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
 	client.user.setStatus(PresenceUpdateStatus.DoNotDisturb)
-	client.user.setActivity(`siema Konkowski`, { type: ActivityType.Custom })
+	client.user.setActivity(`Hi`, { type: ActivityType.Custom })
 });
 
 client.on(Events.InteractionCreate, async interaction => {
