@@ -3,7 +3,7 @@ const { REST, Routes } = require("discord.js");
 const fs = require("node:fs");
 const path = require("node:path");
 const token = process.env.TOKEN;
-const clientId = process.env.CLIENT_ID;
+const clientId = process.env.APPLICATION_ID;
 const guildId = process.env.GUILD_ID;
 
 function removeCommands() {
@@ -51,7 +51,7 @@ const rest = new REST().setToken(token);
 (async () => {
   try {
     console.log(
-      `Started refreshing ${commands.length} application (/) commands.`
+      `Started refreshing ${commands.length} slash commands.`
     );
     console.log(commands);
     // removeCommands();
@@ -62,7 +62,7 @@ const rest = new REST().setToken(token);
     });
 
     console.log(
-      `Successfully reloaded ${data.length} application (/) commands.`
+      `Successfully reloaded ${data.length} slash commands.`
     );
   } catch (error) {
     // And of course, make sure you catch and log any errors!
