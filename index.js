@@ -4,10 +4,13 @@ const { Client, Collection, Events, GatewayIntentBits, PresenceUpdateStatus, Act
 require('dotenv').config()
 const token = process.env.TOKEN
 
+// Discord bots require the use of intents to access certain events.
 const client = new Client({
 	intents: [
 		GatewayIntentBits.Guilds,
 		GatewayIntentBits.MessageContent
+// This ensures that the bot is only able to mention specific users,
+// so someone can't make the bot somehow ping everyone on the server at once.
 	], allowedMentions: { parse: ['users'] } });
 
 client.commands = new Collection();
@@ -23,14 +26,15 @@ for (const folder of commandFolders) {
 		if ('data' in command && 'execute' in command) {
 			client.commands.set(command.data.name, command);
 		} else {
-			console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+			console.warn(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
 		}
 	}
 }
 
 client.once(Events.ClientReady, readyClient => {
+	console.clear();
 	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
-	client.user.setStatus(PresenceUpdateStatus.DoNotDisturb)
+	client.user.setStatus(PresenceUpdateStatus.Online)
 	client.user.setActivity(`Hi`, { type: ActivityType.Custom })
 });
 
