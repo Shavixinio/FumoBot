@@ -37,9 +37,7 @@ for (const folder of commandFolders) {
     if ("data" in command && "execute" in command) {
       commands.push(command.data.toJSON());
     } else {
-      console.log(
-        `[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`
-      );
+      console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
     }
   }
 }
@@ -50,9 +48,7 @@ const rest = new REST().setToken(token);
 // and deploy your commands!
 (async () => {
   try {
-    console.log(
-      `Started refreshing ${commands.length} slash commands.`
-    );
+    console.log(`Started refreshing ${commands.length} slash commands.`);
     // removeCommands();
 
     // The put method is used to fully refresh all commands in the guild with the current set
@@ -60,11 +56,11 @@ const rest = new REST().setToken(token);
       body: commands,
     });
 
-    console.log(
-      `Successfully reloaded ${data.length} slash commands.`
-    );
+    console.log(`Successfully reloaded ${data.length} slash commands.`);
   } catch (error) {
     // And of course, make sure you catch and log any errors!
-    console.error(error);
+    console.error(
+      `There was an error while reloading the slash commands: ${error}`
+    );
   }
 })();
