@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionsBitField } = require('discord.js');
+const { SlashCommandBuilder, PermissionsBitField, MessageFlags } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -18,6 +18,14 @@ module.exports = {
         // Get the user to kick and the reason (if provided)
         const user = interaction.options.getUser('user');
         const reason = interaction.options.getString('reason') || 'No reason provided';
+        const botId = "943782656875847700";
+
+        if (user.id == botId) {
+            return interaction.reply({
+                content: 'I cannot kick myself!',
+                ephemeral: true
+            })
+        }
 
         // Ensure the member executing the command has the "Kick Members" permission
         if (!interaction.member.permissions.has(PermissionsBitField.Flags.KickMembers)) {

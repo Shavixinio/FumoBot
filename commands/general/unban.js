@@ -12,6 +12,14 @@ module.exports = {
     async execute(interaction) {
         // Get the user ID from the command options
         const userId = interaction.options.getString('userid');
+        const botId = "943782656875847700";
+
+        if (userId == botId) {
+            return interaction.reply({
+                content: "I'm already here",
+                ephemeral: true
+            })
+        }
 
         // Check if the member executing the command has the necessary permission
         if (!interaction.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
@@ -19,6 +27,13 @@ module.exports = {
                 content: 'You need the "Ban Members" permission to use this command.', 
                 ephemeral: true 
             });
+        }
+        
+        if (user.id == botId) {
+            return interaction.reply({
+                content: 'I cannot kick myself!',
+                ephemeral: true
+            })
         }
 
         try {
