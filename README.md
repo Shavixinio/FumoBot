@@ -19,15 +19,9 @@ cd (Your folder for the repository)
 ```console
 git pull https://github.com/Shavixinio/DiscordBotProject.git
 ```
-```console
-npm init # Follow the process
-```
 
 ```console
-npm i discord.js
-```
-```console
-npm i dotenv
+npm i # Install all required packages
 ```
 4. Get your bot's token and paste it into the `.envexample` (Make sure to actually rename the file to `.env`)
 > [!CAUTION]
