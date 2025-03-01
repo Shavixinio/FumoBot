@@ -23,7 +23,7 @@ module.exports = {
         if (user.id == botId) {
             return interaction.reply({
                 content: 'I cannot kick myself!',
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             })
         }
 
@@ -31,7 +31,7 @@ module.exports = {
         if (!interaction.member.permissions.has(PermissionsBitField.Flags.KickMembers)) {
             return interaction.reply({
                 content: 'You need the "Kick Members" permission to use this command.',
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
         }
 
@@ -39,7 +39,7 @@ module.exports = {
         if (interaction.member.id === user.id) {
             return interaction.reply({
                 content: 'You cannot kick yourself!',
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
         }
 
@@ -50,7 +50,7 @@ module.exports = {
         if (!member) {
             return interaction.reply({
                 content: 'The specified user is not a member of this server.',
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
         }
 
@@ -65,7 +65,7 @@ module.exports = {
             // Handle errors (e.g., missing permissions)
             await interaction.reply({
                 content: '❌ Failed to kick the member. Please ensure I have the necessary permissions and the user is not a higher rank.',
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
         }
     },

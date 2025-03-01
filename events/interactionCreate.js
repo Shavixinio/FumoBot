@@ -22,9 +22,9 @@ module.exports = {
 				// Ephermal messages are only visible to the user who executed the command
 				// This is useful for error messages that are only relevant to the user who executed the command
 				// If you want everyone to see the message, you can remove the flags property, but why would you do that?
-				await interaction.followUp({ content: 'There was an error while executing this command!', Ephemeral: true });
+				await interaction.followUp({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
 			} else {
-				await interaction.reply({ content: 'There was an error while executing this command!', Ephemeral: true });
+				await interaction.reply({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
 			}
 		}
 	},

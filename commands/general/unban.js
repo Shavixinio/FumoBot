@@ -17,7 +17,7 @@ module.exports = {
         if (userId == botId) {
             return interaction.reply({
                 content: "I'm already here",
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             })
         }
 
@@ -25,14 +25,14 @@ module.exports = {
         if (!interaction.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
             return interaction.reply({ 
                 content: 'You need the "Ban Members" permission to use this command.', 
-                ephemeral: true 
+                flags: MessageFlags.Ephemeral 
             });
         }
         
         if (user.id == botId) {
             return interaction.reply({
                 content: 'I cannot kick myself!',
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             })
         }
 
@@ -43,7 +43,7 @@ module.exports = {
             if (!banInfo) {
                 return interaction.reply({ 
                     content: `❌ No banned user found with the ID ${userId}.`, 
-                    ephemeral: true 
+                    flags: MessageFlags.Ephemeral 
                 });
             }
 
@@ -57,7 +57,7 @@ module.exports = {
             // Handle errors (e.g., user ID not found, bot lacks permissions, etc.)
             await interaction.reply({ 
                 content: '❌ Failed to unban the user. Please ensure the ID is correct and I have the required permissions.', 
-                ephemeral: true 
+                flags: MessageFlags.Ephemeral 
             });
         }
     },

@@ -14,6 +14,6 @@ module.exports = {
                 unban - unbans a person
                 `)
                 .setColor("237feb");
-            await interaction.reply({embeds: [embed], ephemeral: true});
+            await interaction.reply({embeds: [embed], flags: MessageFlags.Ephemeral});
         }
 }
