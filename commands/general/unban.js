@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionsBitField } = require('discord.js');
+const { Client, SlashCommandBuilder, PermissionsBitField, MessageFlags } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -12,13 +12,12 @@ module.exports = {
     async execute(interaction) {
         // Get the user ID from the command options
         const userId = interaction.options.getString('userid');
-        const botId = "943782656875847700";
 
-        if (userId == botId) {
+        if (userId == Client.user) {
             return interaction.reply({
-                content: "I'm already here",
+                content: "I'm already here", 
                 flags: MessageFlags.Ephemeral
-            })
+            });
         }
 
         // Check if the member executing the command has the necessary permission
@@ -29,7 +28,7 @@ module.exports = {
             });
         }
         
-        if (user.id == botId) {
+        if (user.id == Client.user) {
             return interaction.reply({
                 content: 'I cannot kick myself!',
                 flags: MessageFlags.Ephemeral
