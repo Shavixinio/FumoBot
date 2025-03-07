@@ -8,10 +8,16 @@ module.exports = {
             option.setName('user')
                 .setDescription('The user to ban')
                 .setRequired(true)
+        )
+        .addStringOption(option =>
+            option.setName('reason')
+                .setDescription('The reason for banning the member')
+                .setRequired(false)
         ),
     async execute(interaction) {
         // Get the user to ban
         const user = interaction.options.getUser('user');
+        const reason = interaction.options.getString('reason') || "No reason provided";
 
         // Check if the member executing the command has the necessary permission
         if (!interaction.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
@@ -31,10 +37,10 @@ module.exports = {
 
         try {
             // Attempt to ban the user
-            await interaction.guild.members.ban(user);
+            await member.ban(reason);
             // Confirm the ban to the command executor
-            await interaction.reply({ 
-                content: `✅ Successfully banned ${user.tag}.` 
+            await interaction.reply({
+                content: `✅ Successfully banned ${user.tag}. Reason: ${reason}`
             });
         } catch (error) {
             // Handle any errors during the banning process
