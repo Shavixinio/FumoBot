@@ -1,7 +1,6 @@
 const {
   Client,
   SlashCommandBuilder,
-  PermissionsBitField,
   MessageFlags,
 } = require("discord.js");
 
