@@ -1,7 +1,7 @@
 const {
   SlashCommandBuilder,
-  PermissionsBitField,
   MessageFlags,
+  PermissionFlagsBits,
 } = require("discord.js");
 
 module.exports = {
@@ -13,6 +13,7 @@ module.exports = {
         .setName("user")
         .setDescription("The member to kick")
         .setRequired(true)
+        .setDefaultMemberPermissions(PermissionFlagsBits.KickMembers)
     )
     .addStringOption((option) =>
       option
@@ -29,14 +30,6 @@ module.exports = {
     if (user.id == Client.user) {
       return interaction.reply({
         content: "I cannot kick myself!",
-        flags: MessageFlags.Ephemeral,
-      });
-    }
-
-    // Ensure the member executing the command has the "Kick Members" permission
-    if (!interaction.member.permissions.has(PermissionsBitField.Flags.KickMembers)) {
-      return interaction.reply({
-        content: 'You need the "Kick Members" permission to use this command.',
         flags: MessageFlags.Ephemeral,
       });
     }
