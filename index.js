@@ -1,6 +1,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const { Client, Collection, Events, GatewayIntentBits, PresenceUpdateStatus, ActivityType } = require('discord.js');
+const { Client, Collection, Events, GatewayIntentBits, PresenceUpdateStatus, ActivityType, MessageFlags } = require('discord.js');
 require('dotenv').config()
 const token = process.env.TOKEN
 
@@ -52,9 +52,9 @@ client.on(Events.InteractionCreate, async interaction => {
 	} catch (error) {
 		console.error(error);
 		if (interaction.replied || interaction.deferred) {
-			await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
+			await interaction.followUp({ content: 'There was an error while executing this command!', Flags: MessageFlags.Ephemeral });
 		} else {
-			await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+			await interaction.reply({ content: 'There was an error while executing this command!', Flags: MessageFlags.Ephemeral });
 		}
 	}
 });
