@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionsBitField } = require('discord.js');
+const { SlashCommandBuilder, PermissionsBitField, MessageFlags } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -17,7 +17,7 @@ module.exports = {
         if (!interaction.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
             return interaction.reply({ 
                 content: 'You need the "Ban Members" permission to use this command.', 
-                ephemeral: true 
+                Flags: MessageFlags.Ephemeral
             });
         }
 
@@ -25,7 +25,7 @@ module.exports = {
         if (interaction.member.id === user.id) {
             return interaction.reply({ 
                 content: 'You cannot ban yourself!', 
-                ephemeral: true 
+                Flags: MessageFlags.Ephemeral
             });
         }
 
@@ -41,7 +41,7 @@ module.exports = {
             console.error(error);
             await interaction.reply({ 
                 content: '❌ Failed to ban the user. Please check my permissions or ensure the user is still in the server.', 
-                ephemeral: true 
+                Flags: MessageFlags.Ephemeral
             });
         }
     },
