@@ -27,7 +27,7 @@ module.exports = {
 
             await interaction.editReply({ embeds: [embed] });
         } catch (error) {
-            await interaction.editReply('Could\'t find any information on that topic or an error occurred');
+            await interaction.editReply('Could\'t find any information on that topic');
         }
     }
 };
