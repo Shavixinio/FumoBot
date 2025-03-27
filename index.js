@@ -32,10 +32,9 @@ for (const folder of commandFolders) {
 }
 
 client.once(Events.ClientReady, readyClient => {
-	console.clear();
 	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
 	client.user.setStatus(PresenceUpdateStatus.Online)
-	client.user.setActivity(`Hi`, { type: ActivityType.Custom })
+	// client.user.setActivity(`Hello`, { type: ActivityType.Custom })
 });
 
 client.on(Events.InteractionCreate, async interaction => {
