@@ -1,5 +1,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
+const Sequelize = require('sequelize');
 const { Client, Collection, Events, GatewayIntentBits, PresenceUpdateStatus, ActivityType, MessageFlags } = require('discord.js');
 require('dotenv').config()
 const token = process.env.TOKEN
@@ -9,10 +10,36 @@ const client = new Client({
 	intents: [
 		GatewayIntentBits.Guilds,
 		GatewayIntentBits.MessageContent
+
 // This ensures that the bot is only able to mention specific users,
 // so someone can't make the bot somehow ping everyone on the server at once.
 	], allowedMentions: { parse: ['users'] } });
 
+	// Sequelize is an ORM for Node.js that supports many SQL dialects.
+	// It allows you to interact with your database using JavaScript objects instead of raw SQL queries.
+	// In this case, we're using SQLite as our database.
+	const sequelize = new Sequelize('database', 'user', 'password', {
+		host: 'localhost',
+		dialect: 'sqlite',
+		logging: false,
+		// SQLite only
+		storage: 'database.sqlite',
+	});
+
+	const Tags = sequelize.define('tags', {
+		name: {
+			type: Sequelize.STRING,
+			unique: true,
+		},
+		description: Sequelize.TEXT,
+		username: Sequelize.STRING,
+		usage_count: {
+			type: Sequelize.INTEGER,
+			defaultValue: 0,
+			allowNull: false,
+		},
+	});
+	
 client.commands = new Collection();
 const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath);
@@ -32,6 +59,7 @@ for (const folder of commandFolders) {
 }
 
 client.once(Events.ClientReady, readyClient => {
+	Tags.sync();
 	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
 	client.user.setStatus(PresenceUpdateStatus.Online)
 	// client.user.setActivity(`Hello`, { type: ActivityType.Custom })
