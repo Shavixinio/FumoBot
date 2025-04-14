@@ -25,6 +25,11 @@ module.exports = {
                 .setDescription(summary.extract)
                 .setURL(summary.content_urls.desktop.page);
 
+            // Add thumbnail if available
+            if (summary.thumbnail) {
+                embed.setThumbnail(summary.thumbnail.source);
+            }
+
             await interaction.editReply({ embeds: [embed] });
         } catch (error) {
             await interaction.editReply('Could\'t find any information on that topic');
