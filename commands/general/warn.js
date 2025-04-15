@@ -19,7 +19,7 @@ module.exports = {
         ),
     async execute(interaction) {
         if (!interaction.client.sequelize) {
-            await interaction.reply({ content: 'Database connection not available', ephemeral: true });
+            await interaction.reply({ content: 'Database connection not available', flags: MessageFlags.Ephemeral });
             return;
         }
 
@@ -42,7 +42,7 @@ module.exports = {
                 .setDescription(`You have been warned in ${server} for: **${reason}**.\nTotal warnings: **${warningCount + 1}**`)
                 .setTimestamp();
 
-            await interaction.reply({ content: `Warned ${user} for: **${reason}**`, ephemeral: true });
+            await interaction.reply({ content: `Warned ${user} for: **${reason}**`, flags: MessageFlags.Ephemeral });
             user.send({ embeds: [embed] }).catch(err => {
                 console.error(`Could not send warning DM to ${user.tag}:`, err);
                 interaction.followUp({ content: `Could not send DM to ${user}. They may have DMs disabled.`, Flags: MessageFlags.Ephemeral });
@@ -63,7 +63,7 @@ module.exports = {
             }
         } catch (error) {
             console.error('Error accessing database:', error);
-            await interaction.reply({ content: 'An error occurred while accessing the database', ephemeral: true });
+            await interaction.reply({ content: 'An error occurred while accessing the database', flags: MessageFlags.Ephemeral });
             return;
         }
     }
