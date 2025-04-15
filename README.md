@@ -1,4 +1,4 @@
-# FumoCore
+# FumoBot
 A Discord bot that helps with moderation through slash commands that are built-in the bot.
 
 ver. 0.4 Sigma
@@ -27,11 +27,9 @@ npm install
 npm start
 ```
 # Changes
-
-Gave the bot an actual name 
+- Added an SQLite database support
 
 ## New commands:
-- 8ball
-- wiki
+- warn (with database integration support)
 
 ### and other minor changes
