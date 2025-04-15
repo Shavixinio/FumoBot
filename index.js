@@ -5,6 +5,8 @@ const { Client, Collection, Events, GatewayIntentBits, PresenceUpdateStatus, Act
 require('dotenv').config()
 const token = process.env.TOKEN
 
+const { sequelize } = require('./config/database.js');
+
 // Discord bots require the use of intents to access certain events.
 const client = new Client({
 	intents: [
@@ -15,35 +17,25 @@ const client = new Client({
 // so someone can't make the bot somehow ping everyone on the server at once.
 	], allowedMentions: { parse: ['users'] } });
 
-	// Sequelize is an ORM for Node.js that supports many SQL dialects.
-	// It allows you to interact with your database using JavaScript objects instead of raw SQL queries.
-	// In this case, we're using SQLite as our database.
-	const sequelize = new Sequelize('database', 'user', 'password', {
-		host: 'localhost',
-		dialect: 'sqlite',
-		logging: false,
-		// SQLite only
-		storage: 'database.sqlite',
-	});
+// Attach sequelize to client
+client.sequelize = sequelize;
 
-	const Tags = sequelize.define('tags', {
-		name: {
-			type: Sequelize.STRING,
-			unique: true,
-		},
-		description: Sequelize.TEXT,
-		username: Sequelize.STRING,
-		usage_count: {
-			type: Sequelize.INTEGER,
-			defaultValue: 0,
-			allowNull: false,
-		},
-	});
-	
+// Sync database before bot login
+(async () => {
+    try {
+        await sequelize.sync();
+        console.log('Database synchronized');
+    } catch (error) {
+        console.error('Error syncing database:', error);
+    }
+})();
+
 client.commands = new Collection();
 const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath);
 
+// Loop through each folder in the commands directory
+// and then loop through each file in that folder.
 for (const folder of commandFolders) {
 	const commandsPath = path.join(foldersPath, folder);
 	const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
@@ -51,6 +43,7 @@ for (const folder of commandFolders) {
 		const filePath = path.join(commandsPath, file);
 		const command = require(filePath);
 		if ('data' in command && 'execute' in command) {
+			// Add the commands to the collection
 			client.commands.set(command.data.name, command);
 		} else {
 			console.warn(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
@@ -59,7 +52,6 @@ for (const folder of commandFolders) {
 }
 
 client.once(Events.ClientReady, readyClient => {
-	Tags.sync();
 	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
 	client.user.setStatus(PresenceUpdateStatus.Online)
 	// client.user.setActivity(`Hello`, { type: ActivityType.Custom })
