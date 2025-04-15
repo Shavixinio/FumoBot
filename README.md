@@ -1,4 +1,4 @@
-# FumoCore
+# FumoBot
 A Discord bot that helps with moderation through slash commands that are built-in the bot.
 
 ver. 0.4 Sigma
