@@ -6,8 +6,9 @@ ver. 0.5 Sigma
 # Installation
 ### Requirements
 - Have a [Discord](https://discord.com/) account
-- Have [Node.js](https://nodejs.org/en) installed (v20.18.0+)
+- [Node.js](https://nodejs.org/en) (v20.18.0+)
 - An IDE ([VSCode](https://code.visualstudio.com/) is recommended)
+- [git](https://git-scm.com/)
 
 ### Actually setting up the bot
 1. Make a bot at the [Discord developer portal](https://discord.dev) and make sure to toggle the `presence`, `server members` and `message content` intents
@@ -26,6 +27,9 @@ npm install
 ```bash
 npm start
 ```
+
+
+
 # Changes
 - Added an SQLite database support
 
