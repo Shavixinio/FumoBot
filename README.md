@@ -1,8 +1,6 @@
 # FumoBot
 A Discord bot that helps with moderation through slash commands that are built-in the bot.
 
-ver. 0.5 Sigma
-
 # Installation
 ### Requirements
 - Have a [Discord](https://discord.com/) account
