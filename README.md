@@ -25,13 +25,3 @@ npm install
 ```bash
 npm start
 ```
-
-
-
-# Changes
-- Added an SQLite database support
-
-## New commands:
-- warn (with database integration support)
-
-### and other minor changes
