@@ -10,11 +10,11 @@ A Discord bot that helps with moderation through slash commands that are built-i
 
 ### Actually setting up the bot
 1. Make a bot at the [Discord developer portal](https://discord.dev) and make sure to toggle the `presence`, `server members` and `message content` intents
-2. Set up an invite for your bot [here](https://discordapi.com/permissions.html#0) (You must have the Manage Server permission to invite bots)
+2. Set up an invite for your bot [here](https://discordapi.com/permissions.html#0) (You must be the owner or have the Manage Server permission to invite bots)
 3. Open your Terminal
 ```bash
 git clone https://github.com/Shavixinio/FumoCore.git
-cd FumoCore
+cd FumoBot
 npm install
 ```
 4. Get your bot's token and paste it into the `.envexample` (Make sure to actually rename the file to `.env`)
