@@ -14,7 +14,7 @@ const client = new Client({
 		GatewayIntentBits.MessageContent
 
 // This ensures that the bot is only able to mention specific users,
-// so someone can't make the bot somehow ping everyone on the server at once.
+// so someone can't make the bot somehow @mention everyone on the server at once.
 	], allowedMentions: { parse: ['users'] } });
 
 // Attach sequelize to client
