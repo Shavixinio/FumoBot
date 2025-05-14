@@ -13,7 +13,7 @@ A Discord bot that helps with moderation through slash commands that are built-i
 2. Set up an invite for your bot [here](https://discordapi.com/permissions.html#0) (You must be the owner or have the Manage Server permission to invite bots)
 3. Open your Terminal
 ```bash
-git clone https://github.com/Shavixinio/FumoCore.git
+git clone https://github.com/Shavixinio/FumoBot.git
 cd FumoBot
 npm install
 ```
