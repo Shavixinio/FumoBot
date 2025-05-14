@@ -20,6 +20,13 @@ module.exports = {
             })
         }
 
+        if (userId == interaction.user) {
+          return interaction.reply({
+            content: "You cannot unban yourself",
+            Flags: MessageFlags.Ephemeral
+          })
+        }
+
         // Check if the member executing the command has the necessary permission
         if (!interaction.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
             return interaction.reply({ 
