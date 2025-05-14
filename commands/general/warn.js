@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
+const { Client, SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 const Sequelize = require('sequelize');
 
 module.exports = {

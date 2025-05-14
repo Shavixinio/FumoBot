@@ -13,10 +13,10 @@ module.exports = {
         // Get the user ID from the command options
         const userId = interaction.options.getString('userid');
 
-        if (userId == Client.user) {
+        if (userId == interaction.client.user.id) {
             return interaction.reply({
-                content: "I can't unban myself",
-                Flags: MessageFlags.ephemeral
+                content: "I cannot unban myself",
+                Flags: MessageFlags.Ephemeral
             })
         }
 
@@ -26,13 +26,6 @@ module.exports = {
                 content: 'You need the "Ban Members" permission to use this command.', 
                 Flags: MessageFlags.Ephemeral
             });
-        }
-        
-        if (user.id == botId) {
-            return interaction.reply({
-                content: 'I cannot kick myself!',
-                Flags: MessageFlags.Ephemeral
-            })
         }
 
         try {
