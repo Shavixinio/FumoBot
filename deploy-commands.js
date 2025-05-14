@@ -7,6 +7,7 @@ const clientId = process.env.APPLICATION_ID;
 const guildId = process.env.GUILD_ID;
 
 function removeCommands() {
+  // for guild commands
   rest
     .put(Routes.applicationGuildCommands(clientId, guildId), { body: [] })
     .then(() => console.log("Successfully deleted all guild commands."))

@@ -12,11 +12,10 @@ module.exports = {
     async execute(interaction) {
         // Get the user ID from the command options
         const userId = interaction.options.getString('userid');
-        const botId = "943782656875847700";
 
-        if (userId == botId) {
+        if (userId == Client.user) {
             return interaction.reply({
-                content: "I'm already here",
+                content: "I can't unban myself",
                 Flags: MessageFlags.ephemeral
             })
         }
