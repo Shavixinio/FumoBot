@@ -16,7 +16,7 @@ function removeCommands() {
   // for global commands
   rest
     .put(Routes.applicationCommands(clientId), { body: [] })
-    .then(() => console.log("Successfully deleted all application commands."))
+    .then(() => console.log("Successfully deleted all global commands."))
     .catch(console.error);
 }
 
