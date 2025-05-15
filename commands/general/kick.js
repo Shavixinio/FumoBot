@@ -18,9 +18,8 @@ module.exports = {
         // Get the user to kick and the reason (if provided)
         const user = interaction.options.getUser('user');
         const reason = interaction.options.getString('reason') || 'No reason provided';
-        const botId = "943782656875847700";
 
-        if (user.id == botId) {
+        if (user.id == interaction.client.user.id) {
             return interaction.reply({
                 content: 'I cannot kick myself!',
                 Flags: MessageFlags.Ephemeral
