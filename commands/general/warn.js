@@ -18,32 +18,51 @@ module.exports = {
                 .setRequired(false)
         ),
     async execute(interaction) {
-        // Check for required permissions
         if (!interaction.member.permissions.has(PermissionsBitField.Flags.KickMembers) && 
             !interaction.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
-            return interaction.reply({ 
-                content: 'You need either "Kick Members" or "Ban Members" permission to warn users.', 
-                flags: MessageFlags.Ephemeral 
-            });
+            const permissionEmbed = new EmbedBuilder()
+                .setColor('#FF0000')
+                .setTitle('❌ Permission Denied')
+                .setDescription('You need either "Kick Members" or "Ban Members" permission to warn users.')
+                .setTimestamp();
+            return interaction.reply({ embeds: [permissionEmbed], flags: MessageFlags.Ephemeral });
         }
 
         if (!interaction.client.sequelize) {
-            await interaction.reply({ content: 'Database connection not available', flags: MessageFlags.Ephemeral });
+            const errorEmbed = new EmbedBuilder()
+                .setColor('#FF0000')
+                .setTitle('❌ Database Error')
+                .setDescription('Database connection not available')
+                .setTimestamp();
+            await interaction.reply({ embeds: [errorEmbed], flags: MessageFlags.Ephemeral });
             return;
         }
 
         const user = interaction.options.getUser('user');
-        const member = await interaction.guild.members.fetch(user.id);
         const reason = interaction.options.getString('reason') || 'No reason provided';
         const server = interaction.guild;
 
-        // Check if trying to warn a bot
-        if (user.bot) {
-            await interaction.reply({ content: "You can't warn bots!", flags: MessageFlags.Ephemeral });
+
+        if (interaction.member.id === user.id) {
+            const selfEmbed = new EmbedBuilder()
+                .setColor('#FFA500')
+                .setTitle('⚠️ Invalid Action')
+                .setDescription('You cannot warn yourself!')
+                .setTimestamp();
+            await interaction.reply({ embeds: [selfEmbed], flags: MessageFlags.Ephemeral });
             return;
         }
 
-        // Get total warnings count
+        if (user.bot) {
+            const botEmbed = new EmbedBuilder()
+                .setColor('#FFA500')
+                .setTitle('⚠️ Invalid Target')
+                .setDescription('You cannot warn bots!')
+                .setTimestamp();
+            await interaction.reply({ embeds: [botEmbed], flags: MessageFlags.Ephemeral });
+            return;
+        }
+
         try {
             const warningCount = await interaction.client.sequelize.models.Warnings.count({
                 where: {
@@ -52,26 +71,40 @@ module.exports = {
                 }
             });
 
-            const embed = new EmbedBuilder()
-                .setColor('#ff0000')
-                .setTitle('Warning')
-                .setDescription(`You have been warned in ${server} for: **${reason}**.\nTotal warnings: **${warningCount + 1}**`)
+            const warnEmbed = new EmbedBuilder()
+                .setColor('#00FF00')
+                .setTitle('⚠️ Warning Issued')
+                .addFields(
+                    { name: 'Warned User', value: `${user.tag}`, inline: true },
+                    { name: 'Warned By', value: `${interaction.user.tag}`, inline: true },
+                    { name: 'Total Warnings', value: `${warningCount + 1}`, inline: true },
+                    { name: 'Reason', value: reason }
+                )
                 .setTimestamp();
 
-            await interaction.reply({ content: `Warned ${user} for: **${reason}**`, flags: MessageFlags.Ephemeral });
+            const dmEmbed = new EmbedBuilder()
+                .setColor('#FF0000')
+                .setTitle('⚠️ Warning Received')
+                .setDescription(`You have been warned in ${server.name}`)
+                .addFields(
+                    { name: 'Reason', value: reason },
+                    { name: 'Total Warnings', value: `${warningCount + 1}` }
+                )
+                .setTimestamp();
+
+            await interaction.reply({ embeds: [warnEmbed] });
             
-            // Try to send DM to user
             try {
-                await user.send({ embeds: [embed] });
+                await user.send({ embeds: [dmEmbed] });
             } catch (err) {
-                console.error(`Could not send warning DM to ${user.tag}:`, err);
-                await interaction.followUp({ 
-                    content: `Could not send DM to ${user}. They may have DMs disabled.`, 
-                    flags: MessageFlags.Ephemeral 
-                });
+                const dmErrorEmbed = new EmbedBuilder()
+                    .setColor('#FFA500')
+                    .setTitle('⚠️ DM Not Sent')
+                    .setDescription(`Could not send DM to ${user}. They may have DMs disabled.`)
+                    .setTimestamp();
+                await interaction.followUp({ embeds: [dmErrorEmbed], flags: MessageFlags.Ephemeral });
             }
 
-            // Log the warning to the database
             try {
                 await interaction.client.sequelize.models.Warnings.create({
                     userId: user.id,
@@ -81,18 +114,20 @@ module.exports = {
                     timestamp: new Date()
                 });
             } catch (error) {
-                console.error('Error logging warning:', error);
-                await interaction.followUp({ 
-                    content: 'Warning was issued but failed to log to database.', 
-                    flags: MessageFlags.Ephemeral 
-                });
+                const dbErrorEmbed = new EmbedBuilder()
+                    .setColor('#FFA500')
+                    .setTitle('⚠️ Database Error')
+                    .setDescription('Warning was issued but failed to log to database.')
+                    .setTimestamp();
+                await interaction.followUp({ embeds: [dbErrorEmbed], flags: MessageFlags.Ephemeral });
             }
         } catch (error) {
-            console.error('Error accessing database:', error);
-            await interaction.reply({ 
-                content: 'An error occurred while accessing the database', 
-                flags: MessageFlags.Ephemeral 
-            });
+            const errorEmbed = new EmbedBuilder()
+                .setColor('#FF0000')
+                .setTitle('❌ Error')
+                .setDescription('An error occurred while accessing the database')
+                .setTimestamp();
+            await interaction.reply({ embeds: [errorEmbed], flags: MessageFlags.Ephemeral });
         }
     }
 };

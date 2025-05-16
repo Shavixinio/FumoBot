@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionsBitField, MessageFlags, Message } = require('discord.js');
+const { SlashCommandBuilder, PermissionsBitField, MessageFlags, EmbedBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -17,54 +17,68 @@ module.exports = {
     async execute(interaction) {
         // Check for required permissions
         if (!interaction.member.permissions.has(PermissionsBitField.Flags.KickMembers)) {
-            return interaction.reply({ 
-                content: 'You need the "Kick Members" permission to use this command.', 
-                flags: MessageFlags.Ephemeral 
-            });
+            const errorEmbed = new EmbedBuilder()
+                .setColor('#FF0000')
+                .setTitle('❌ Permission Denied')
+                .setDescription('You need the "Kick Members" permission to use this command.')
+                .setTimestamp();
+            return interaction.reply({ embeds: [errorEmbed], flags: MessageFlags.Ephemeral });
         }
 
         const user = interaction.options.getUser('user');
         const reason = interaction.options.getString('reason') || 'No reason provided';
 
-        if (user.id == interaction.client.user.id) {
-            return interaction.reply({
-                content: 'I cannot kick myself!',
-                Flags: MessageFlags.Ephemeral
-            })
+        if (user.id === interaction.client.user.id) {
+            const selfEmbed = new EmbedBuilder()
+                .setColor('#FFA500')
+                .setTitle('⚠️ Invalid Action')
+                .setDescription('I cannot kick myself!')
+                .setTimestamp();
+            return interaction.reply({ embeds: [selfEmbed], flags: MessageFlags.Ephemeral });
         }
 
-        // Prevent self-kick
         if (interaction.member.id === user.id) {
-            return interaction.reply({
-                content: 'You cannot kick yourself!',
-                Flags: MessageFlags.Ephemeral
-            });
+            const warnEmbed = new EmbedBuilder()
+                .setColor('#FFA500')
+                .setTitle('⚠️ Invalid Action')
+                .setDescription('You cannot kick yourself!')
+                .setTimestamp();
+            return interaction.reply({ embeds: [warnEmbed], flags: MessageFlags.Ephemeral });
         }
 
-        // Find the member in the guild
         const member = interaction.guild.members.cache.get(user.id);
 
-        // Check if the user is a valid member of the server
         if (!member) {
-            return interaction.reply({
-                content: 'The specified user is not a member of this server.',
-                Flags: MessageFlags.Ephemeral
-            });
+            const notFoundEmbed = new EmbedBuilder()
+                .setColor('#FF0000')
+                .setTitle('❌ User Not Found')
+                .setDescription('The specified user is not a member of this server.')
+                .setTimestamp();
+            return interaction.reply({ embeds: [notFoundEmbed], flags: MessageFlags.Ephemeral });
         }
 
         try {
-            // Attempt to kick the member
             await member.kick(reason);
-            await interaction.reply({
-                content: `✅ Successfully kicked ${user.tag}. Reason: ${reason}`
-            });
+            
+            const successEmbed = new EmbedBuilder()
+                .setColor('#00FF00')
+                .setTitle('✅ User Kicked')
+                .addFields(
+                    { name: 'Kicked User', value: `${user.tag}`, inline: true },
+                    { name: 'Kicked By', value: `${interaction.user.tag}`, inline: true },
+                    { name: 'Reason', value: reason }
+                )
+                .setTimestamp();
+
+            await interaction.reply({ embeds: [successEmbed] });
         } catch (error) {
-            console.error(error);
-            // Handle errors (e.g., missing permissions)
-            await interaction.reply({
-                content: '❌ Failed to kick the member. Please ensure I have the necessary permissions and the user is not a higher rank.',
-                Flags: MessageFlags.Ephemeral
-            });
+            const errorEmbed = new EmbedBuilder()
+                .setColor('#FF0000')
+                .setTitle('❌ Kick Failed')
+                .setDescription('Failed to kick the member. Please ensure I have the necessary permissions and the user is not a higher rank.')
+                .setTimestamp();
+
+            await interaction.reply({ embeds: [errorEmbed], flags: MessageFlags.Ephemeral });
         }
     },
 };

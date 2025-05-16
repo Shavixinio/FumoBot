@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionsBitField, MessageFlags } = require('discord.js');
+const { SlashCommandBuilder, PermissionsBitField, MessageFlags, EmbedBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -15,39 +15,52 @@ module.exports = {
             .setRequired(false)
     ),
     async execute(interaction) {
-        // Get the user to ban
         const user = interaction.options.getUser('user');
         const reason = interaction.options.getString('reason') || "No reason provided";
 
-        // Check if the member executing the command has the necessary permission
         if (!interaction.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
-            return interaction.reply({ 
-                content: 'You need the "Ban Members" permission to use this command.', 
-                flags: MessageFlags.Ephemeral
-            });
+            const errorEmbed = new EmbedBuilder()
+                .setColor('#FF0000')
+                .setTitle('❌ Permission Denied')
+                .setDescription('You need the "Ban Members" permission to use this command.')
+                .setTimestamp();
+            
+            return interaction.reply({ embeds: [errorEmbed], flags: MessageFlags.Ephemeral });
         }
 
-        // Prevent banning oneself
         if (interaction.member.id === user.id) {
-            return interaction.reply({ 
-                content: 'You cannot ban yourself!', 
-                Flags: MessageFlags.Ephemeral
-            });
+            const warnEmbed = new EmbedBuilder()
+                .setColor('#FFA500')
+                .setTitle('⚠️ Invalid Action')
+                .setDescription('You cannot ban yourself!')
+                .setTimestamp();
+            
+            return interaction.reply({ embeds: [warnEmbed], flags: MessageFlags.Ephemeral });
         }
 
         try {
-            // Attempt to ban the user
             await interaction.guild.members.ban(user, { reason: reason });
-            await interaction.reply({ 
-              content: `✅ Successfully banned ${user.tag}, reason: ${reason}.` 
-            });
+            
+            const successEmbed = new EmbedBuilder()
+                .setColor('#00FF00')
+                .setTitle('✅ User Banned')
+                .addFields(
+                    { name: 'Banned User', value: `${user.tag}`, inline: true },
+                    { name: 'Banned By', value: `${interaction.user.tag}`, inline: true },
+                    { name: 'Reason', value: reason }
+                )
+                .setTimestamp();
+
+            await interaction.reply({ embeds: [successEmbed] });
+            
         } catch (error) {
-            // Handle any errors during the banning process
-            console.error(error);
-            await interaction.reply({ 
-                content: '❌ Failed to ban the user. Please check my permissions or ensure the user is still in the server.', 
-                Flags: MessageFlags.Ephemeral
-            });
+            const errorEmbed = new EmbedBuilder()
+                .setColor('#FF0000')
+                .setTitle('❌ Ban Failed')
+                .setDescription('Failed to ban the user. Please check my permissions or ensure the user is still in the server.')
+                .setTimestamp();
+
+            await interaction.reply({ embeds: [errorEmbed], flags: MessageFlags.Ephemeral });
         }
     },
 };
