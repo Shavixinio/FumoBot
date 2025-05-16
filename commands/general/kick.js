@@ -15,7 +15,14 @@ module.exports = {
                 .setRequired(false)
         ),
     async execute(interaction) {
-        // Get the user to kick and the reason (if provided)
+        // Check for required permissions
+        if (!interaction.member.permissions.has(PermissionsBitField.Flags.KickMembers)) {
+            return interaction.reply({ 
+                content: 'You need the "Kick Members" permission to use this command.', 
+                flags: MessageFlags.Ephemeral 
+            });
+        }
+
         const user = interaction.options.getUser('user');
         const reason = interaction.options.getString('reason') || 'No reason provided';
 
@@ -24,14 +31,6 @@ module.exports = {
                 content: 'I cannot kick myself!',
                 Flags: MessageFlags.Ephemeral
             })
-        }
-
-        // Ensure the member executing the command has the "Kick Members" permission
-        if (!interaction.member.permissions.has(PermissionsBitField.Flags.KickMembers)) {
-            return interaction.reply({
-                content: 'You need the "Kick Members" permission to use this command.',
-                Flags: MessageFlags.Ephemeral
-            });
         }
 
         // Prevent self-kick
