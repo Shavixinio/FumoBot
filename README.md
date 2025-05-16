@@ -1,5 +1,5 @@
 # FumoBot
-A Discord bot that helps with moderation through slash commands that are built-in the bot.
+A general purpose Discord bot
 
 # Installation
 ### Requirements
