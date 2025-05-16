@@ -23,7 +23,7 @@ module.exports = {
         if (!interaction.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
             return interaction.reply({ 
                 content: 'You need the "Ban Members" permission to use this command.', 
-                Flags: MessageFlags.Ephemeral
+                flags: MessageFlags.Ephemeral
             });
         }
 
