@@ -1,6 +1,9 @@
 # FumoBot
 A general purpose Discord bot
 
+# Abandoned (for now)
+This project at first was partially for my school assignment and a hobby project, but I've decided to move onto other things/languages. If I will ever consider taking bot development seriously, then I might consider working on the bot again
+
 # Installation
 ### Requirements
 - Have a [Discord](https://discord.com/) account
